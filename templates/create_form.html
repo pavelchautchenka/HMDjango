@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+
+{% block title %}
+    Создание заметки
+{% endblock %}
+
+{% block links %}
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+{% endblock %}
+
+{% block content %}
+
+    <div class="container " >
+        <h1>Создание заметки</h1>
+
+        <form action="{% url 'create-note' %}" method="post">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label for="exampleFormControlInput1" class="form-label">Заголовок</label>
+                <input name="title" type="text" class="form-control" id="exampleFormControlInput1"
+                       value="{{ note.title }}">
+            </div>
+
+            <div class="mb-3">
+                <label for="exampleFormControlTextarea1" class="form-label">Содержимое</label>
+                <textarea name="content" class="form-control" id="exampleFormControlTextarea1"
+                          rows="10">{{ note.content }}</textarea>
+            </div>
+
+            <!-- Блок кнопки -->
+            <button type="submit" class="btn btn-outline-dark ">Отправить</button>
+
+        </form>
+    </div>
+{% endblock %}

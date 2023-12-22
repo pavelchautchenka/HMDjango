@@ -1,0 +1,29 @@
+/*Класс стиля `header` */
+.back {
+    background-color: #4e4e4e;
+    color: #4e4e4e;
+    background: #4e4e4e;
+}
+.header {
+    color: white;
+    background-color: #458fff;
+    border-radius: 8px;
+    text-align: center;
+    padding: 20px;
+}
+
+
+.card {
+    padding: 20px;
+    margin: 5px;
+    border-radius: 8px;
+    border: #4e4e4e solid 1px;
+    width: 330px;
+}
+
+.content {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: center;
+}

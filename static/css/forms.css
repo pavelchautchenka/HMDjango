@@ -1,0 +1,24 @@
+.input-form {
+    border-radius: 5px;
+    border: #bdbdbd solid 1px;
+    height: 20px;
+    padding-left: 8px;
+}
+
+.input-block {
+    padding-left: 20px;
+    padding-bottom: 10px;
+}
+
+.form-button {
+    background-color: #458fff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 7px 25px;
+    cursor: pointer;
+}
+
+.form-button:hover {
+    box-shadow: 0 0 5px 3px rgba(138, 138, 138, 0.4);
+}
