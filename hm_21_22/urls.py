@@ -15,19 +15,27 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-
+from django.urls import path, include, re_path
+from django.conf.urls.static import serve
+from django.conf import settings
+from hwork import views
 from hwork.views import home_page_view, create_note_view, show_note_view, about_page_view, delete_note, update_note
 
 urlpatterns = [
     path('admin/', admin.site.urls),  # Подключение панели администратора.
+    path('accounts/', include('django.contrib.auth.urls')),
+    path('accounts/register', views.register, name='register'),
 
-    path("", home_page_view, name="home"),  # Добавим главную страницу.
-    path("create", create_note_view, name="create-note"),
-    path("post/<note_uuid>", show_note_view, name="show-note"),
-    path("about", about_page_view, name="about"),
-    path("delete/<note_uuid>", delete_note, name="delete"),
-    path("update/<uuid:note_uuid>", update_note, name="update-note"),
+
+    path("", views.home_page_view, name="home"),  # Добавим главную страницу.
+    path("filter", views.filter_notes_view, name="filter-notes"),
+    path("create", views.create_note_view, name="create-note"),
+
+    path("post/<note_uuid>", views.show_note_view, name="show-note"),
+    path("about", views.about_page_view, name="about"),
+    path("delete/<note_uuid>", views.delete_note, name="delete"),
+    path("update/<uuid:note_uuid>", views.update_note, name="update-note"),
+    re_path(r"^media/(?P<path>.*)$", serve, {"document_root": settings.MEDIA_ROOT})
 
 
 ]

@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'hwork.apps.HworkConfig',
 ]
 
-AUTH_USER_MODEL = "auth.User"
+AUTH_USER_MODEL = "hwork.User"
 
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
@@ -85,6 +85,15 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
+
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql',
+    #     'NAME': "posts",
+    #     "USER": "django_pavel",
+    #     "PASSWORD": "password",
+    #     "HOST": "localhost",  # IP адрес или домен СУБД.
+    #     "PORT": 5432,
+    # }
 }
 
 

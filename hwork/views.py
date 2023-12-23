@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.utils import timezone
 from django.urls import reverse
-from django.http import HttpResponseRedirect, Http404
+from django.http import HttpResponseRedirect, Http404, HttpRequest
 from django.core.handlers.wsgi import WSGIRequest
 from django.db.models import Q
 
@@ -65,15 +65,25 @@ def filter_notes_view(request: WSGIRequest):
         "search_value_form": search,
     }
 
+
 def about_page_view(request: WSGIRequest):
     return render(request, "about.html")
 
 
 def create_note_view(request: WSGIRequest):
+    print(request.user)
+
+    if request.user.is_anonymous:
+        user = None
+        return render(request, "create_form.html", {"user":user})
+
     if request.method == "POST":
+        images: list | None = request.FILES.getlist("noteImage")
         note = Note.objects.create(
             title=request.POST["title"],
             content=request.POST["content"],
+            user=request.user,
+            image=images[0] if images else None,
         )
         return HttpResponseRedirect(reverse('show-note', args=[note.uuid]))
 
@@ -114,5 +124,46 @@ def update_note(request: WSGIRequest, note_uuid):
         return HttpResponseRedirect(reverse('show-note', args=[note.uuid]))
     note = Note.objects.get(uuid=note_uuid)
     return render(request, "update_form.html", {"note": note})
+
+
+def register(request: WSGIRequest):
+    if request.method != "POST":
+        return render(request, "registration/register.html")
+    print(request.POST)
+    if not request.POST.get("username") or not request.POST.get("email") or not request.POST.get("password1"):
+        return render(
+            request,
+            "registration/register.html",
+            {"errors": "Укажите все поля!"}
+        )
+    print(User.objects.filter(
+            Q(username=request.POST["username"]) | Q(email=request.POST["email"])
+    ))
+    # Если уже есть такой пользователь с username или email.
+    if User.objects.filter(
+            Q(username=request.POST["username"]) | Q(email=request.POST["email"])
+    ).count() > 0:
+        return render(
+            request,
+            "registration/register.html",
+            {"errors": "Если уже есть такой пользователь с username или email"}
+        )
+
+    # Сравниваем два пароля!
+    if request.POST.get("password1") != request.POST.get("password2"):
+        return render(
+            request,
+            "registration/register.html",
+            {"errors": "Пароли не совпадают"}
+        )
+
+    # Создадим учетную запись пользователя.
+    # Пароль надо хранить в БД в шифрованном виде.
+    User.objects.create_user(
+        username=request.POST["username"],
+        email=request.POST["email"],
+        password=request.POST["password1"]
+    )
+    return HttpResponseRedirect(reverse('home'))
 
 

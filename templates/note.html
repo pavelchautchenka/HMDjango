@@ -14,15 +14,24 @@
 
         <div class="btn-group" role="group" aria-label="Basic mixed styles example">
 
-            <a href="{% url 'update-note' note.uuid%}"   class="btn btn-warning">Update</a>
+            <a href="{% url 'update-note' note.uuid %}" class="btn btn-warning">Update</a>
 
-            <form action="{% url 'delete' note.uuid  %}" method="post">
+            <form action="{% url 'delete' note.uuid %}" method="post">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-danger">Delete</button>
             </form>
         </div>
 
         <hr>
+
+
+        {#  Image  #}
+        {% if note.image %}
+            <div class="d-flex justify-content-center">
+                <img style="max-height: 150px;" src="{{ note.image.url }}" alt="not loaded">
+            </div>
+        {% endif %}
+
 
         <div>{{ note.content | safe | linebreaks }}</div>
 

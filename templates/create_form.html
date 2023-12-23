@@ -14,20 +14,25 @@
 
 {% block content %}
 
-    <div class="container " >
+    <div class="container ">
         <h1>Создание заметки</h1>
 
-        <form action="{% url 'create-note' %}" method="post">
+        <form action="{% url 'create-note' %}" method="post" enctype="multipart/form-data">
             {% csrf_token %}
 
             <div class="mb-3">
-                <label for="exampleFormControlInput1" class="form-label">Заголовок</label>
+                <label for="exampleFormControlInput1" class="form-label">Image</label>
+                <input name="noteImage" type="file" class="form-control" id="exampleFormControlInput1">
+            </div>
+
+            <div class="mb-3">
+                <label for="exampleFormControlInput1" class="form-label">Title</label>
                 <input name="title" type="text" class="form-control" id="exampleFormControlInput1"
                        value="{{ note.title }}">
             </div>
 
             <div class="mb-3">
-                <label for="exampleFormControlTextarea1" class="form-label">Содержимое</label>
+                <label for="exampleFormControlTextarea1" class="form-label">Content</label>
                 <textarea name="content" class="form-control" id="exampleFormControlTextarea1"
                           rows="10">{{ note.content }}</textarea>
             </div>
