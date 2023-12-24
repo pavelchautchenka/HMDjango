@@ -78,7 +78,6 @@ def owner_notes_view(request: WSGIRequest, username):
 
     user = User.objects.get(username=username)
 
-
     user_notes = Note.objects.filter(user=user)
 
     return render(request, 'owner_notes.html', {"notes": user_notes})
@@ -89,7 +88,7 @@ def user_notes_view(request: WSGIRequest, username):
     if request.user.is_authenticated:
         user = User.objects.get(username=username)
         user_notes = Note.objects.filter(user=user)
-        return render(request,'all notes.html', {"notes": user_notes})
+        return render(request,'owner_notes.html', {"notes": user_notes})
     else:
         return render(request, "registration/login.html" )
 
