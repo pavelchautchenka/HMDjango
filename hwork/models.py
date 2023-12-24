@@ -54,4 +54,5 @@ def after_delete_note(sender, instance: Note, **kwargs):
 
         for file in note_media_folder.glob("*"):
             file.unlink(missing_ok=True)
-        note_media_folder.unlink(missing_ok=True)
+        note_media_folder.rmdir()
+

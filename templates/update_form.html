@@ -17,8 +17,13 @@
     <div class="container " >
         <h1>Redact note</h1>
 
-        <form action="{% url 'update-note' note_uuid=note.uuid  %}" method="post">
+        <form action="{% url 'update-note' note_uuid=note.uuid  %}" method="post" enctype="multipart/form-data">
             {% csrf_token %}
+            
+            <div class="mb-3">
+                <label for="exampleFormControlInput1" class="form-label">Image</label>
+                <input name="image" type="file" class="form-control" id="exampleFormControlInput1">
+            </div>
 
             <div class="mb-3">
                 <label for="exampleFormControlInput1" class="form-label">Заголовок</label>

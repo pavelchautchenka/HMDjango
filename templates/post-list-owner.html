@@ -1,0 +1,36 @@
+<div class="row row-cols-1 row-cols-md-3 g-4  ">
+    {% for note in notes %}
+        
+        
+        {#      Если есть картинка в заметке то показываем, если нет то img from freepik  #}
+        <div class="card" style="width: 18rem;">
+             {% if note.image %}
+             <img style="height: 170px;" src="{{ note.image.url }}" class="card-img-top" alt="{{ note.title }}">
+                {% else %}
+                   <img src="https://img.freepik.com/free-vector/vector-of-office-supply-icon_53876-9123.jpg?w=2000&t=st=1702761438~exp=1702762038~hmac=f169f6cf1a460e587bec68edeb8980bf947b2afb171054f70c35d5e196657879"
+                 class="card-img-top" alt="...">
+                {% endif %}
+
+            
+            <div class="card-body">
+                <h5 align="center" class="card-title">
+                    <a class="text-dark text-decoration-none"
+                       href="{% url 'show-note' note.uuid %}">{{ note.title }}</a>
+                </h5>
+
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"> Created at: <br> {{ note.created_at }}
+                </li>
+                <li class="list-group-item">Modified at: <br> {{ note.mod_time }}
+                </li>
+                <li class="list-group-item">Owner: <br>
+                {% if note.user %}
+                    {{ note.user | capfirst }}
+                {% else %}
+                    Anonymous User
+                {% endif %}
+                </li>
+            </ul>
+        </div>
+    {% endfor %}

@@ -17,7 +17,7 @@
 
                 {#      Главная   #}
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Home</a>
+                    <a class="nav-link " aria-current="page" href="{% url 'home' %}">Home</a>
                 </li>
 
                 {#      Создать заметку   #}
@@ -39,11 +39,15 @@
                             <button class="nav-link" type="submit"> {{ user.username| upper }} : Выйти</button>
                         </form>
                     </li>
-                    
-                    
+
+                    <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="{% url 'user_notes' user.username %}">My notes </a>
+                </li>
+
+
 
                 {% else %}
-
+ 
                     {# Вход #}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'login' %}">Войти</a>
@@ -51,7 +55,7 @@
 
                     {#      Регистрация   #}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'register' %}">Зарегистрироваться</a>
+                        <a class="nav-link" href="{% url 'register'  %}">Зарегистрироваться</a>
                     </li>
 
                 {% endif %}
@@ -59,8 +63,9 @@
 
 
             {#    Форма поиска (по умолчанию метод GET)   #}
-            <form class="d-flex" role="search" action="/">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+            <form class="d-flex"  action="{% url 'filter-notes' %}">
+                <input name="search" value="{{ search_value_form }}"
+                 class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                 <button class="btn btn-outline-success" type="submit">Search</button>
             </form>
 

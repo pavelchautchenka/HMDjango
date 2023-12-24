@@ -1,11 +1,13 @@
-from django.shortcuts import render
+from django.conf import settings
+from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from django.urls import reverse
 from django.http import HttpResponseRedirect, Http404, HttpRequest
 from django.core.handlers.wsgi import WSGIRequest
 from django.db.models import Q
-
+from django.contrib.auth import authenticate, login
 from .models import Note, User
+import os
 
 
 def home_page_view(request: WSGIRequest):
@@ -64,18 +66,49 @@ def filter_notes_view(request: WSGIRequest):
         "notes": notes_queryset,
         "search_value_form": search,
     }
+    return render(request, "home.html", context)
 
 
 def about_page_view(request: WSGIRequest):
     return render(request, "about.html")
 
 
+# все заметки любого другого пользователя
+def owner_notes_view(request: WSGIRequest, username):
+
+    user = User.objects.get(username=username)
+
+
+    user_notes = Note.objects.filter(user=user)
+
+    return render(request, 'owner_notes.html', {"notes": user_notes})
+
+
+#Заметки пользователя в логине
+def user_notes_view(request: WSGIRequest, username):
+    if request.user.is_authenticated:
+        user = User.objects.get(username=username)
+        user_notes = Note.objects.filter(user=user)
+        return render(request,'all notes.html', {"notes": user_notes})
+    else:
+        return render(request, "registration/login.html" )
+
+
 def create_note_view(request: WSGIRequest):
     print(request.user)
 
-    if request.user.is_anonymous:
-        user = None
-        return render(request, "create_form.html", {"user":user})
+    # if not request.user.is_authenticated:
+    # return render(request, "registration/login.html", {"errors": "Необходимо войти"})
+
+    if request.user.is_anonymous and request.method == "POST":
+        images: list | None = request.FILES.getlist("noteImage")
+        note = Note.objects.create(
+            title=request.POST["title"],
+            content=request.POST["content"],
+            user=None,
+            image=images[0] if images else None,
+        )
+        return HttpResponseRedirect(reverse('show-note', args=[note.uuid]))
 
     if request.method == "POST":
         images: list | None = request.FILES.getlist("noteImage")
@@ -106,7 +139,9 @@ def delete_note(request: WSGIRequest, note_uuid):
     try:
 
         note = Note.objects.get(uuid=note_uuid)
+
         note.delete()
+
     except Note.DoesNotExist:
         # Если не найдено такой записи.
         raise Http404
@@ -117,6 +152,14 @@ def delete_note(request: WSGIRequest, note_uuid):
 def update_note(request: WSGIRequest, note_uuid):
     if request.method == "POST":
         note = Note.objects.get(uuid=note_uuid)
+        new_image = request.FILES.get("image")
+        if new_image:
+            # Удаление старого изображения
+            if note.image:
+                old_image_path = os.path.join(settings.MEDIA_ROOT, note.image.name)
+                if os.path.isfile(old_image_path):
+                    os.remove(old_image_path)
+        note.image = new_image
         note.title = request.POST.get('title', note.title)
         note.content = request.POST.get('content', note.content)
         note.mod_time = timezone.now()
@@ -137,7 +180,7 @@ def register(request: WSGIRequest):
             {"errors": "Укажите все поля!"}
         )
     print(User.objects.filter(
-            Q(username=request.POST["username"]) | Q(email=request.POST["email"])
+        Q(username=request.POST["username"]) | Q(email=request.POST["email"])
     ))
     # Если уже есть такой пользователь с username или email.
     if User.objects.filter(
@@ -164,6 +207,10 @@ def register(request: WSGIRequest):
         email=request.POST["email"],
         password=request.POST["password1"]
     )
+
+    # При регистрации редирект на главную страницу под логинам
+    user = authenticate(username=request.POST["username"], password=request.POST["password1"])
+    if user is not None:
+        login(request, user)
+
     return HttpResponseRedirect(reverse('home'))
-
-
