@@ -75,22 +75,21 @@ def about_page_view(request: WSGIRequest):
 
 # все заметки любого другого пользователя
 def owner_notes_view(request: WSGIRequest, username):
-
     user = User.objects.get(username=username)
 
     user_notes = Note.objects.filter(user=user)
 
-    return render(request, 'owner_notes.html', {"notes": user_notes})
+    return render(request, 'notes/owner_notes.html', {"notes": user_notes})
 
 
-#Заметки пользователя в логине
+# Заметки пользователя в логине
 def user_notes_view(request: WSGIRequest, username):
     if request.user.is_authenticated:
         user = User.objects.get(username=username)
         user_notes = Note.objects.filter(user=user)
-        return render(request,'owner_notes.html', {"notes": user_notes})
+        return render(request, 'notes/owner_notes.html', {"notes": user_notes})
     else:
-        return render(request, "registration/login.html" )
+        return render(request, "registration/login.html")
 
 
 def create_note_view(request: WSGIRequest):
@@ -131,7 +130,7 @@ def show_note_view(request: WSGIRequest, note_uuid):
         # Если не найдено такой записи.
         raise Http404
 
-    return render(request, "note.html", {"note": note})
+    return render(request, "notes/note.html", {"note": note})
 
 
 def delete_note(request: WSGIRequest, note_uuid):
