@@ -11,7 +11,7 @@
             <p class="blog-post-meta">{{ note.created_at }}</p>
             <p class="blog-post-meta">Note modified at: {{ note.mod_time }}</p>
         </div>
-        {% if user.is_authenticated and note.user.username == user.username %}
+        {% if user.is_authenticated and note.user.username == user.username or user.is_anonymous and note.user.username == None %}
             <div class="btn-group" role="group" aria-label="Basic mixed styles example">
 
                 <a href="{% url 'update-note' note.uuid %}" class="btn btn-warning">Update</a>

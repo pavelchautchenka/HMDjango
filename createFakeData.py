@@ -1,8 +1,12 @@
 # Инициализируем Django
+# Важно в этой последовательности
+import sys
 import os
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'hm_21_22.settings')
+
 from faker import Faker
 from django.contrib.auth.hashers import make_password
-from hwork.models import Note, User
+
 
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'hm_21_22.settings')
@@ -11,12 +15,12 @@ from django import setup
 setup()  # Инициализируем Django.
 
 # Импортируем модели после инициализации.
-
+from hwork.models import Note, User
 
 def create_users(limit: int):
     users: list[User] = []
-
     faker = Faker("en")
+
     for i in range(limit):
         profile = faker.simple_profile()
         users.append(
@@ -52,6 +56,6 @@ def create_notes(limit: int):
 
 # Точка входа для запуска данного файла.
 if __name__ == "__main__":
-    create_users(100)
-    create_notes(500)
+    #create_users(100)
+    create_notes(5)
     # Выполняется только при непосредственном запуске этого файла.

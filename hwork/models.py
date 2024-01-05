@@ -18,10 +18,20 @@ class User(AbstractUser):
 
     class Meta:
         db_table = "users"
-
+        # ordering = ['-created_at']  # Дефис это означает DESC сортировку (обратную).
+        # indexes = [
+        #     models.Index(fields=("created_at",), name="created_at_index"),
+        # ]
 
 def upload_to(instance: "Note", filename: str):
     return f"{instance.uuid}/{filename}"
+
+
+class Tag(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+
+    def __str__(self):
+        return self.name
 
 
 class Note(models.Model):
@@ -30,12 +40,13 @@ class Note(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     title = models.CharField(max_length=255)
     content = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)        #db_index=True
     mod_time = models.DateTimeField(null=True, blank=True)
     image = models.ImageField(upload_to=upload_to, null=True)
     # auto_now_add=True автоматически добавляет текущую дату и время.
 
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE,null=True, blank=True)
+    tags = models.ManyToManyField(Tag, related_name="notes", verbose_name="Теги")
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, null=True, blank=True)
     # `on_delete=models.CASCADE`
     # При удалении пользователя, удалятся все его записи.
 
@@ -45,6 +56,11 @@ class Note(models.Model):
 
     class Meta:
         ordering = ["-created_at"]
+        indexes = [models.Index(fields=("created_at",), name="created_at_index")
+        ]
+
+    def __str__(self):
+        return f"Заметка: \"{self.title}\""
 
 
 @receiver(post_delete, sender=Note)

@@ -20,25 +20,30 @@
                 </h5>
 
             </div>
-        
+
             <ul class="list-group list-group-flush">
                 <li class="list-group-item"> Created at: <br> {{ note.created_at }}
                 </li>
                 {% if note.mod_time %}
                     <li class="list-group-item">Modified at: <br> {{ note.mod_time }}</li>
-                {% else %}  
-                     <li class="list-group-item">  <br> <br> </li>
+                {% else %}
+                    <li class="list-group-item"><br> Note not modified <br></li>
                 {% endif %}
                 <li class="list-group-item">Owner: <br>
-                    {% if note.user %}
-
-
-
+                    {% if note.username %}
                         <a class="text-dark text-decoration-none"
-                           href="{% url 'owner-notes-view' note.user %}">{{ note.user | capfirst }}</a>
+                           href="{% url 'owner-notes-view' note.username %}">{{ note.username | capfirst }}</a>
 
                     {% else %}
                         Anonymous User
+                    {% endif %}
+                </li>
+                <li class="list-group-item">
+                    {# Если у заметки нет тегов, то все равно будет список, в котором имеется лишь один None, не учитываем такое #}
+                    {% if note.tag_names.0 != None %}
+                        {% for tag in note.tag_names %}
+                            <span class="me-2 badge text-bg-primary">{{ tag }}</span>
+                        {% endfor %}
                     {% endif %}
                 </li>
 

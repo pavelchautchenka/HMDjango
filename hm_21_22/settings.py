@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-l27yiax43vo4vcc&c*hal_kjx&(e&&+zv_4tj38@d6+cui$xu9
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+INTERNAL_IPS = ["127.0.0.1"]
 
 # Application definition
 
@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'hwork.apps.HworkConfig',
+    "debug_toolbar",
 ]
 
 AUTH_USER_MODEL = "hwork.User"
@@ -53,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 ROOT_URLCONF = 'hm_21_22.urls'
@@ -80,22 +82,23 @@ WSGI_APPLICATION = 'hm_21_22.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+# DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.sqlite3',
+#        'NAME': BASE_DIR / 'db.sqlite3',
+#    }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': "posts",
+        "USER": "django_pavel",
+        "PASSWORD": "password",
+        "HOST": "127.0.0.1",  # IP адрес или домен СУБД.
+        "PORT": 5432,
     }
-
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.postgresql',
-    #     'NAME': "posts",
-    #     "USER": "django_pavel",
-    #     "PASSWORD": "password",
-    #     "HOST": "localhost",  # IP адрес или домен СУБД.
-    #     "PORT": 5432,
-    # }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators

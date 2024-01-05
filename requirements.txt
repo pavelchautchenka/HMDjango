@@ -9,6 +9,7 @@ crashtest==0.4.1
 distlib==0.3.8
 Django==5.0
 dulwich==0.21.7
+Faker==21.0.0
 fastjsonschema==2.19.0
 filelock==3.13.1
 idna==3.6
@@ -26,13 +27,16 @@ platformdirs==3.11.0
 poetry==1.7.1
 poetry-core==1.8.1
 poetry-plugin-export==1.6.0
+psycopg2-binary==2.9.9
 ptyprocess==0.7.0
 pycparser==2.21
 pyproject_hooks==1.0.0
+python-dateutil==2.8.2
 rapidfuzz==3.5.2
 requests==2.31.0
 requests-toolbelt==1.0.0
 shellingham==1.5.4
+six==1.16.0
 sqlparse==0.4.4
 tomli==2.0.1
 tomlkit==0.12.3
