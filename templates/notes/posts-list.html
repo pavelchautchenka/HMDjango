@@ -1,7 +1,7 @@
 <div class="row row-cols-1 row-cols-md-3 g-4  ">
 
     {% for note in notes  %}
-        {% if note.active == True %}
+        {% if note.active == True and user.is_active == True %}
 
 
 
@@ -54,4 +54,5 @@
             </div>
         {% endif %}
     {% endfor %}
+
 </div>

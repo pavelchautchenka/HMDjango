@@ -34,7 +34,7 @@ def home_page_view(request: WSGIRequest):
             tag_names=ArrayAgg('tags__name', distinct=True)
         )
         .values("uuid", "title", "created_at", "mod_time", "username",
-                "tag_names")  # Выбор только указанных полей для результата
+                "tag_names", "active")  # Выбор только указанных полей для результата
         .distinct()  # Убирание дубликатов, если они есть
         .order_by("-created_at")  # Сортировка результатов по убыванию по полю created_at
     )
