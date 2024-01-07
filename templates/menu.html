@@ -41,7 +41,11 @@
                     </li>
 
                     <li class="nav-item">
-                    <a class="nav-link" aria-current="page" href="{% url 'user_notes' user.username %}">My notes </a>
+                    <a class="nav-link" aria-current="page" href="{% url 'owner-notes-view' user.username %}">My notes </a>
+                </li>
+                    
+                    <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="{% url 'profile-view' user.username %}">My profile </a>
                 </li>
 
 

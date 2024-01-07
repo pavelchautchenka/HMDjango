@@ -7,6 +7,7 @@ from django.dispatch import receiver
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.contrib.auth import get_user_model
+from ckeditor.fields import RichTextField
 
 
 class User(AbstractUser):
@@ -15,7 +16,7 @@ class User(AbstractUser):
     И добавляем новое поле `phone`
     """
     phone = models.CharField(max_length=11, null=True, blank=True)
-
+    objects = models.Manager()
     class Meta:
         db_table = "users"
         # ordering = ['-created_at']  # Дефис это означает DESC сортировку (обратную).
@@ -38,11 +39,12 @@ class Note(models.Model):
     # Стандартный ID для каждой таблицы можно не указывать, Django по умолчанию это добавит.
 
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    title = models.CharField(max_length=255)
-    content = models.TextField()
+    active = models.BooleanField(default=False)
+    title = models.CharField(max_length=255, help_text='max 255 symbols') #verbose_name = "заголовок" для панели администратора
+    content = RichTextField()
     created_at = models.DateTimeField(auto_now_add=True)        #db_index=True
-    mod_time = models.DateTimeField(null=True, blank=True)
-    image = models.ImageField(upload_to=upload_to, null=True)
+    mod_time = models.DateTimeField(null=True, blank=True, db_index=True)
+    image = models.ImageField(upload_to=upload_to, null=True,blank=True)
     # auto_now_add=True автоматически добавляет текущую дату и время.
 
     tags = models.ManyToManyField(Tag, related_name="notes", verbose_name="Теги")
@@ -55,8 +57,9 @@ class Note(models.Model):
     objects = models.Manager()       # Он подключается к базе
 
     class Meta:
-        ordering = ["-created_at"]
-        indexes = [models.Index(fields=("created_at",), name="created_at_index")
+        ordering = ["mod_time"]
+        indexes = [models.Index(fields=("created_at",), name="created_at_index"),
+                   models.Index(fields=("mod_time",), name="mod_time_index"),
         ]
 
     def __str__(self):

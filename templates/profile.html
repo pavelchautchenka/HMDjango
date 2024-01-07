@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+
+{% block title %}
+    Redact My profile
+{% endblock %}
+
+{% block links %}
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+{% endblock %}
+
+{% block content %}
+
+    <div class="container ">
+        <h1>Redact Profile: {{ user.username | upper }}</h1>
+        <hr>
+
+        <div class="list-group-item">
+            
+                {% for tag in tags %}
+                    <span class="me-2 badge text-bg-primary">{{ tag.name }}</span>
+                {% endfor %}
+            
+        </div>
+        <hr>
+
+        <form action="{% url 'profile-view' user.username %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label for="exampleFormControlInput1" class="form-label">First Name</label>
+                <input name="first_name" type="text" class="form-control" id="exampleFormControlInput1"
+                       value="{{ user.first_name }}">
+            </div>
+
+            <div class="mb-3">
+                <label for="exampleFormControlInput1" class="form-label">Last Name</label>
+                <input name="last_name" type="text" class="form-control" id="exampleFormControlInput1"
+                       value="{{ user.last_name }}">
+            </div>
+
+            <div class="mb-3">
+                <label for="exampleFormControlInput1" class="form-label">Phone numb</label>
+                <input name="phone" type="text" class="form-control" id="exampleFormControlInput1"
+                       value="{{ user.phone }}">
+            </div>
+
+
+            <button type="submit" class="btn btn-outline-dark ">Redact</button>
+
+        </form>
+    </div>
+{% endblock %}
