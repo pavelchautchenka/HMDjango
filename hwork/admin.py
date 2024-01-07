@@ -62,8 +62,13 @@ class NoteAdmin(admin.ModelAdmin):
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ['username', 'first_name', 'last_name', 'note_count']
+    list_display = ["is_active", 'username', 'first_name', 'last_name', 'note_count']
     search_fields = ['username', 'first_name']
+    actions = ["block_user",]
+    @admin.action(description='Block User')
+
+    def block_user(self, request, queryset):
+        queryset.update(is_active=True)
 
     fieldsets = (
         # 1  tuple(None, dict)

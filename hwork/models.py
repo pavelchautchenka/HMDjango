@@ -15,14 +15,17 @@ class User(AbstractUser):
     Наследуем все поля из `AbstractUser`
     И добавляем новое поле `phone`
     """
+    is_active = models.BooleanField(default=True)
     phone = models.CharField(max_length=11, null=True, blank=True)
     #objects = models.Manager()
+
     class Meta:
         db_table = "users"
         # ordering = ['-created_at']  # Дефис это означает DESC сортировку (обратную).
         # indexes = [
         #     models.Index(fields=("created_at",), name="created_at_index"),
         # ]
+
 
 def upload_to(instance: "Note", filename: str):
     return f"{instance.uuid}/{filename}"
