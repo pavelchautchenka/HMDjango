@@ -1,53 +1,57 @@
 <div class="row row-cols-1 row-cols-md-3 g-4  ">
 
-    {% for note in notes %}
+    {% for note in notes  %}
+        {% if note.active == False %}
 
 
-        {#      Если есть картинка в заметке то показываем, если нет то img from freepik  #}
-        <div class="card" style="width: 18rem;">
-            {% if note.image %}
-                <img style="height: 170px;" src="{{ note.image.url }}" class="card-img-top" alt="{{ note.title }}">
-            {% else %}
-                <img src="https://img.freepik.com/free-vector/vector-of-office-supply-icon_53876-9123.jpg?w=2000&t=st=1702761438~exp=1702762038~hmac=f169f6cf1a460e587bec68edeb8980bf947b2afb171054f70c35d5e196657879"
-                     class="card-img-top" alt="...">
-            {% endif %}
 
 
-            <div class="card-body">
-                <h5 align="center" class="card-title">
-                    <a class="text-dark text-decoration-none"
-                       href="{% url 'show-note' note.uuid %}">{{ note.title }}</a>
-                </h5>
-
-            </div>
-
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item"> Created at: <br> {{ note.created_at }}
-                </li>
-                {% if note.mod_time %}
-                    <li class="list-group-item">Modified at: <br> {{ note.mod_time }}</li>
+            {#      Если есть картинка в заметке то показываем, если нет то img from freepik  #}
+            <div class="card" style="width: 18rem;">
+                {% if note.image %}
+                    <img style="height: 170px;" src="{{ note.image.url }}" class="card-img-top" alt="{{ note.title }}">
                 {% else %}
-                    <li class="list-group-item"><br> Note not modified <br></li>
+                    <img src="https://img.freepik.com/free-vector/vector-of-office-supply-icon_53876-9123.jpg?w=2000&t=st=1702761438~exp=1702762038~hmac=f169f6cf1a460e587bec68edeb8980bf947b2afb171054f70c35d5e196657879"
+                         class="card-img-top" alt="...">
                 {% endif %}
-                <li class="list-group-item">Owner: <br>
-                    {% if note.username %}
+
+
+                <div class="card-body">
+                    <h5 align="center" class="card-title">
                         <a class="text-dark text-decoration-none"
-                           href="{% url 'owner-notes-view' note.username %}">{{ note.username | capfirst }}</a>
+                           href="{% url 'show-note' note.uuid %}">{{ note.title }}</a>
+                    </h5>
 
+                </div>
+
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"> Created at: <br> {{ note.created_at }}
+                    </li>
+                    {% if note.mod_time %}
+                        <li class="list-group-item">Modified at: <br> {{ note.mod_time }}</li>
                     {% else %}
-                        Anonymous User
+                        <li class="list-group-item"><br> Note not modified <br></li>
                     {% endif %}
-                </li>
-                <li class="list-group-item">
-                    {# Если у заметки нет тегов, то все равно будет список, в котором имеется лишь один None, не учитываем такое #}
-                    {% if note.tag_names.0 != None %}
-                        {% for tag in note.tag_names %}
-                            <span class="me-2 badge text-bg-primary">{{ tag }}</span>
-                        {% endfor %}
-                    {% endif %}
-                </li>
+                    <li class="list-group-item">Owner: <br>
+                        {% if note.username %}
+                            <a class="text-dark text-decoration-none"
+                               href="{% url 'owner-notes-view' note.username %}">{{ note.username | capfirst }}</a>
 
-            </ul>
-        </div>
+                        {% else %}
+                            Anonymous User
+                        {% endif %}
+                    </li>
+                    <li class="list-group-item">
+                        {# Если у заметки нет тегов, то все равно будет список, в котором имеется лишь один None, не учитываем такое #}
+                        {% if note.tag_names.0 != None %}
+                            {% for tag in note.tag_names %}
+                                <span class="me-2 badge text-bg-primary">{{ tag }}</span>
+                            {% endfor %}
+                        {% endif %}
+                    </li>
+
+                </ul>
+            </div>
+        {% endif %}
     {% endfor %}
 </div>

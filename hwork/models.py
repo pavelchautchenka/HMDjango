@@ -16,7 +16,7 @@ class User(AbstractUser):
     И добавляем новое поле `phone`
     """
     phone = models.CharField(max_length=11, null=True, blank=True)
-    objects = models.Manager()
+    #objects = models.Manager()
     class Meta:
         db_table = "users"
         # ordering = ['-created_at']  # Дефис это означает DESC сортировку (обратную).
