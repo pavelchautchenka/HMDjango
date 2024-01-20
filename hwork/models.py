@@ -21,6 +21,7 @@ class User(AbstractUser):
 
     class Meta:
         db_table = "users"
+        #verbose_name = "USERS Test"
         # ordering = ['-created_at']  # Дефис это означает DESC сортировку (обратную).
         # indexes = [
         #     models.Index(fields=("created_at",), name="created_at_index"),
@@ -42,7 +43,7 @@ class Note(models.Model):
     # Стандартный ID для каждой таблицы можно не указывать, Django по умолчанию это добавит.
 
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    active = models.BooleanField(default=False)
+    active = models.BooleanField(default=True)
     title = models.CharField(max_length=255, help_text='max 255 symbols') #verbose_name = "заголовок" для панели администратора
     content = RichTextField()
     created_at = models.DateTimeField(auto_now_add=True)        #db_index=True

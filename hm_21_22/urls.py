@@ -43,5 +43,7 @@ urlpatterns = [
     path("__debug__/", include("debug_toolbar.urls")),
     path('ckeditor/', include('ckeditor_uploader.urls')),
 
+    path('api/',include('hwork.api.urls'))
+
     #path("/", views.NotesListView.as_view(), name="note")
 ]

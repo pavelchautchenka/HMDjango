@@ -36,10 +36,12 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'django.contrib.postgres',
     'django.contrib.staticfiles',
     'hwork.apps.HworkConfig',
     "debug_toolbar",
     "ckeditor",
+    "rest_framework",
 ]
 
 AUTH_USER_MODEL = "hwork.User"
@@ -99,6 +101,14 @@ DATABASES = {
         "HOST": "127.0.0.1",  # IP адрес или домен СУБД.
         "PORT": 5432,
     }
+}
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    "PAGE_SIZE": 2,
 }
 
 # Password validation

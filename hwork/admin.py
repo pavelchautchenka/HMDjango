@@ -5,9 +5,13 @@ from .models import Note, User, Tag
 from django.utils.safestring import mark_safe
 from django.db.models import Count
 
+
+
+
 @admin.register(Note)
 class NoteAdmin(admin.ModelAdmin):
-    list_display = ["active", "preview_image",'title', 'short_content', 'created_at', 'mod_time',"tags_function",'user']
+    list_display = ["active", "preview_image",'title', 'short_content', 'created_at', 'mod_time',"tags_function", 'user']
+    list_display_links = ["active", "preview_image",'title', 'short_content', 'created_at', 'mod_time',"tags_function", 'user']
     search_fields = ['title', 'content']
     date_hierarchy = "created_at"
     # Действия
@@ -62,12 +66,17 @@ class NoteAdmin(admin.ModelAdmin):
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ["is_active", 'username', 'first_name', 'last_name', 'note_count']
+    list_display = [ 'username', 'first_name', 'last_name', 'note_count',"is_active"]
     search_fields = ['username', 'first_name']
-    actions = ["block_user",]
-    @admin.action(description='Block User')
+    actions = ["block_user", "unlock_user"]
+    list_editable = ("is_active",)
 
+    @admin.action(description='Block User')
     def block_user(self, request, queryset):
+        queryset.update(is_active=False)
+
+    @admin.action(description='Unlock User')
+    def unlock_user(self, request, queryset):
         queryset.update(is_active=True)
 
     fieldsets = (

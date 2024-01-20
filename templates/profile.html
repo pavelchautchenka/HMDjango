@@ -45,7 +45,7 @@
             <div class="mb-3">
                 <label for="exampleFormControlInput1" class="form-label">Phone numb</label>
                 <input name="phone" type="text" class="form-control" id="exampleFormControlInput1"
-                       value="{{ user.phone }}">
+                       value="{{ user.phone |default:"+33 "}}">
             </div>
 
 

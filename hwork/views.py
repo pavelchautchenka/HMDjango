@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from django.urls import reverse
@@ -10,94 +11,48 @@ from .models import Note, User, Tag
 import os
 from django.db.models import F
 from django.contrib.postgres.aggregates import ArrayAgg
-from django.contrib.auth.decorators import login_required
+from .services import ret_queryset, create_note, update_user
 
 
 def home_page_view(request: WSGIRequest):
-    # # Обязательно! каждая функция view должна принимать первым параметром request.
-    # all_notes = Note.objects.all()[:510] # Получение всех записей из таблицы этой модели.
-    # context: dict = {
-    #     "notes": all_notes
-    # }
-    # print(request.user)
-    # return render(request, "home.html", context)
 
-    queryset = (
-        Note.objects.all()  # Получение всех объектов из таблицы Note
-        .select_related("user")  # Вытягивание связанных данных из таблицы User в один запрос
-        .prefetch_related("tags")  # Вытягивание связанных данных из таблицы Tag в отдельные запросы
-        .annotate(
-            # Создание нового вычисляемого поля username из связанной таблицы User
-            username=F('user__username'),
-
-            # Создание массива уникальных имен тегов для каждой заметки
-            tag_names=ArrayAgg('tags__name', distinct=True)
-        )
-        .values("uuid", "title", "created_at", "mod_time", "username",
-                "tag_names", "active")  # Выбор только указанных полей для результата
-        .distinct()  # Убирание дубликатов, если они есть
-        .order_by("-created_at")  # Сортировка результатов по убыванию по полю created_at
-    )
-    print(queryset.query)
+    queryset = ret_queryset()
+    queryset = queryset.filter(active=True)
 
     return render(request, 'home.html', {'notes': queryset[:100]})
+
+
+def owner_notes_view(request: WSGIRequest, username):
+    queryset = ret_queryset()
+    queryset = queryset.filter(username=username)
+
+    return render(request, 'notes/owner_notes.html', {"notes": queryset})
 
 
 def profile_page_view(request: WSGIRequest, username):
     if request.method == 'POST':
         user = User.objects.get(username=username)
-        user.first_name = request.POST.get("first_name", user.first_name)
-        user.last_name = request.POST.get("last_name", user.last_name)
-        user.phone = request.POST.get("phone", user.phone)
-        user.save()
+        update_user(request, user)
         return HttpResponseRedirect(reverse("home",))
     user = User.objects.get(username=username)
     tags_queryset = Tag.objects.filter(notes__user=user).distinct()
 
     return render(request, 'profile.html',{'tags': tags_queryset} )
 
-
+@login_required
 def update_note(request: WSGIRequest, note_uuid):
     if request.method == "POST":
         note = Note.objects.get(uuid=note_uuid)
-        new_image = request.FILES.get("image")
-        if new_image:
-            # Удаление старого изображения
-            if note.image:
-                old_image_path = os.path.join(settings.MEDIA_ROOT, note.image.name)
-                if os.path.isfile(old_image_path):
-                    os.remove(old_image_path)
-
-            note.image = new_image
-        note.title = request.POST.get('title', note.title)
-        note.content = request.POST.get('content', note.content)
-        note.mod_time = timezone.now()
-        note.save()
+        note = update_note(request, note)
         return HttpResponseRedirect(reverse('show-note', args=[note.uuid]))
     note = Note.objects.get(uuid=note_uuid)
     return render(request, "notes/update_form.html", {"note": note})
 
 
+@login_required
 def create_note_view(request: WSGIRequest):
     if request.method == "POST":
-        images: list | None = request.FILES.getlist("noteImage")
-        user = request.user if not request.user.is_anonymous else None
-        note = Note.objects.create(
-            title=request.POST["title"],
-            content=request.POST["content"],
-            user=user,
-            image=images[0] if images else None,
-        )
-        # Если нет тегов, то будет пустой список
-        tags_names: list[str] = request.POST.get("tags", "").split(",")
-        tags_names = list(map(str.strip, tags_names))  # Убираем лишние пробелы
-
-        tags_objects: list[Tag] = []
-        for tag in tags_names:
-            tag_obj, created = Tag.objects.get_or_create(name=tag)
-            tags_objects.append(tag_obj)
-
-        note.tags.set(tags_objects)
+        note = create_note(request)
         return HttpResponseRedirect(reverse('show-note', args=[note.uuid]))
 
     # Вернется только, если метод не POST.
@@ -123,6 +78,7 @@ def delete_note(request: WSGIRequest, note_uuid):
         # Если не найдено такой записи.
         raise Http404
     return render(request, "notes/confirm.html", {"note": note})
+
 
 
 def register(request: WSGIRequest):
@@ -227,25 +183,5 @@ def about_page_view(request: WSGIRequest):
     return render(request, "about.html")
 
 
-# все заметки любого другого пользователя
-def owner_notes_view(request: WSGIRequest, username):
-    user = User.objects.get(username=username)
-    queryset = (Note.objects
-                .filter(user=user)  # Получение всех объектов из таблицы Note
-                .select_related("user")  # Вытягивание связанных данных из таблицы User в один запрос
-                .prefetch_related("tags")  # Вытягивание связанных данных из таблицы Tag в отдельные запросы
-                .annotate(
-        # Создание нового вычисляемого поля username из связанной таблицы User
-        username=F('user__username'),
 
-        # Создание массива уникальных имен тегов для каждой заметки
-        tag_names=ArrayAgg('tags__name', distinct=True)
-    )
-                .values("uuid", "title", "created_at", "mod_time", "username",
-                        "tag_names")  # Выбор только указанных полей для результата
-                .filter(user=user)
-                .distinct()  # Убирание дубликатов, если они есть
-                .order_by("-created_at")  # Сортировка результатов по убыванию по полю created_at
-                )
 
-    return render(request, 'notes/owner_notes.html', {"notes": queryset})
