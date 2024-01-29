@@ -19,6 +19,12 @@
                 <li class="nav-item">
                     <a class="nav-link " aria-current="page" href="{% url 'home' %}">Home</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="{% url 'history' %}">History
+                        <span class="badge rounded-pill bg-danger">{{ viewed_notes | length }}</span>
+                    </a>
+
+                </li>
 
                 {#      Создать заметку   #}
                 <li class="nav-item">

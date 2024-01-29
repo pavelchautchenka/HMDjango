@@ -10,9 +10,8 @@ from hwork.models import Note, Tag
 
 
 class NoteListAPIView(ListCreateAPIView):
-    queryset = Note.objects.all()[:50]
+    queryset = Note.objects.all()[:5]
     serializer_class = NoteSerializer
-    permission_classes = [IsAuthenticated]
 
 
 class NoteDetailAPIView(RetrieveUpdateDestroyAPIView):
@@ -23,9 +22,7 @@ class NoteDetailAPIView(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsOwnerOrReadOnly]
 
 
-class TagsDetailAPIViews(ListCreateAPIView):
+class TagListCreateAPIViews(ListCreateAPIView):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-
-
-
+    permission_classes = [IsAuthenticated]

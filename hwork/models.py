@@ -15,7 +15,7 @@ class User(AbstractUser):
     Наследуем все поля из `AbstractUser`
     И добавляем новое поле `phone`
     """
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
     phone = models.CharField(max_length=11, null=True, blank=True)
     #objects = models.Manager()
 

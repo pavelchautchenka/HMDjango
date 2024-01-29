@@ -78,4 +78,9 @@ def update_note(request, note):
     return note
 
 
-#def register_note(request):
+def history_ids(request: WSGIRequest):
+    return request.session["viewed_notes"]
+
+def history_service(request: WSGIRequest):
+    return {"viewed_notes": request.session.get("viewed_notes", [])}
+

@@ -3,35 +3,40 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
-    
+
     {% if errors %}
-    	<div class="alert alert-danger">
+        <div class="alert alert-danger">
             {{ errors }}
         </div>
     {% endif %}
 
-	<div class="container py-5" style="width: 350px">
+    <div class="container py-5" style="width: 350px">
         <form action="{% url 'register' %}" method="post">
             {% csrf_token %}
-             <div class="mb-3">
+            <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">Username</label>
-                <input name="username" type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                <input name="username" type="text" class="form-control" id="exampleInputEmail1"
+                       aria-describedby="emailHelp">
             </div>
             <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">First Name</label>
-                <input name="first_name" type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                <input name="first_name" type="text" class="form-control" id="exampleInputEmail1"
+                       aria-describedby="emailHelp">
             </div>
             <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">Last Name</label>
-                <input name="last_name" type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                <input name="last_name" type="text" class="form-control" id="exampleInputEmail1"
+                       aria-describedby="emailHelp">
             </div>
             <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">Phone</label>
-                <input name="phone" type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                <input name="phone" type="text" class="form-control" id="exampleInputEmail1"
+                       aria-describedby="emailHelp">
             </div>
             <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">Email</label>
-                <input name="email" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                <input name="email" type="email" class="form-control" id="exampleInputEmail1"
+                       aria-describedby="emailHelp">
             </div>
             <div class="mb-3">
                 <label for="exampleInputPassword1" class="form-label">Password</label>
@@ -42,7 +47,13 @@
                 <input name="password2" type="password" class="form-control" id="exampleInputPassword1">
             </div>
 
-            <button type="submit" class="btn btn-primary">Войти</button>
+            <button type="submit" class="btn btn-primary">Sign In</button>
+        </form>
+        <br>
+        <form method="post">
+            {% csrf_token %}
+            {{ password_reset_form.as_p }}
+            <button type="submit" class="btn btn-primary">Reset my password</button>
         </form>
     </div>
 {% endblock %}
