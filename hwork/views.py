@@ -1,28 +1,21 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404
 from django.urls import reverse
-from django.http import HttpResponseRedirect, Http404, HttpRequest, HttpResponse
+from django.http import HttpResponseRedirect, Http404
 from django.core.handlers.wsgi import WSGIRequest
 from django.db.models import Q
-
 from django.contrib.auth import authenticate, login
 from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode
 from .mail import ConfirmUserRegisterEmailSender
 from .models import Note, User, Tag
 from .services import ret_queryset, create_note, update_user
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import  permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, AllowAny
-from django.core.mail import send_mail
 from django.contrib.auth.tokens import default_token_generator
-from django.utils.http import urlsafe_base64_encode
-from django.utils.encoding import force_bytes
-from .forms import PasswordResetRequestForm
-
-from django.template.loader import render_to_string
 from django.shortcuts import render, redirect
-from django.contrib.sites.shortcuts import get_current_site
 from .mail import ConfirmUserResetPasswordEmailSender
 from django.contrib import messages
+
 
 @permission_classes([AllowAny])
 def home_page_view(request: WSGIRequest):
@@ -173,13 +166,13 @@ def reset_password_view(request: WSGIRequest):
     return render(request, 'password/reset_form.html')
 
 
-def confirm_new_password_view(request:WSGIRequest, uidb64, token):
+def confirm_new_password_view(request: WSGIRequest, uidb64, token):
     username = force_str(urlsafe_base64_decode(uidb64))
     user = get_object_or_404(User, username=username)
 
     if not default_token_generator.check_token(user, token):
-       error_message = 'Invalid token.'
-       return render(request, "password/errors.html", {'error_message': error_message})
+        error_message = 'Invalid token.'
+        return render(request, "password/errors.html", {'error_message': error_message})
 
     if request.method == 'POST':
         new_password1 = request.POST.get("password1")
@@ -195,6 +188,7 @@ def confirm_new_password_view(request:WSGIRequest, uidb64, token):
             error_message = ("passwords don't match")
             return render(request, "password/errors.html", {'error_message': error_message})
     return render(request, "password/confirme_new_password.html", {'uidb64': uidb64, 'token': token})
+
 
 def confirm_register_view(request: WSGIRequest, uidb64: str, token: str):
     username = force_str(urlsafe_base64_decode(uidb64))
