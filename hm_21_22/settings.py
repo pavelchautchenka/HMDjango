@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 from datetime import timedelta
 from pathlib import Path
-
 from django.middleware.gzip import GZipMiddleware
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -158,15 +157,18 @@ USE_I18N = True
 
 USE_TZ = True
 
-#=============EMAIL===================
 
+
+#=============EMAIL===================
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = 465
 EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
 EMAIL_HOST_USER = 'litivin1987@yandex.ru'
 DEFAULT_FROM_EMAIL = 'litivin1987@yandex.ru'
-EMAIL_HOST_PASSWORD = 'zumszvgrkzfhgljb'
+EMAIL_HOST_PASSWORD = 'duzmhdphciqnxmdu'
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/

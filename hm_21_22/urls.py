@@ -28,25 +28,31 @@ from hwork.views import confirm_register_view
 urlpatterns = [
     path('admin/', admin.site.urls),  # Подключение панели администратора.
     path('accounts/', include('django.contrib.auth.urls')),
+    #Register
     path('accounts/register', views.register, name='register'),
-
+    path("register/confirm/<uidb64>/<token>", confirm_register_view, name="register-confirm"),
+    #Reset_New_Password
+    path("register/pasword-resetform", views.reset_form_view, name='resetform'),
+    path("password-reset/", views.reset_password_view, name="reset-password"),
+    path("password-reset/new-password<uidb64>/<token>", views.confirm_new_password_view, name="new-password"),
+    # Home
     path("", views.home_page_view, name="home"),  # Добавим главную страницу.
     path("filter", views.filter_notes_view, name="filter-notes"),
+    #Create/Delete/Update Note
     path("create", views.create_note_view, name="create-note"),
     path("post/<note_uuid>", views.show_note_view, name="show-note"),
-
     path("user/<username>/notes", views.owner_notes_view, name="owner-notes-view"),
-    path("profile/<username>", views.profile_page_view, name="profile-view"),
-
-    path("about", views.about_page_view, name="about"),
     path("delete/<note_uuid>", views.delete_note, name="delete"),
     path("update/<note_uuid>", views.update_note, name="update-note"),
-
+    #My Profile
+    path("profile/<username>", views.profile_page_view, name="profile-view"),
+    #About Site
+    path("about", views.about_page_view, name="about"),
+    #Messages history
+    path('history/', views.history, name="history"),
     re_path(r"^media/(?P<path>.*)$", serve, {"document_root": settings.MEDIA_ROOT}),
     path("__debug__/", include("debug_toolbar.urls")),
     path('ckeditor/', include('ckeditor_uploader.urls')),
-
-    path('history/', views.history, name="history"),
 
     # path('password_reset/', views.password_reset_request, name='password_reset_request'),
     # path('password_reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),
@@ -60,5 +66,8 @@ urlpatterns = [
     path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
 
     path("register/confirm/<uidb64>/<token>", confirm_register_view, name="register-confirm"),
-    #path("/", views.NotesListView.as_view(), name="note"),
+
+    path("__debug__/", include("debug_toolbar.urls")),
+    path('ckeditor/', include('ckeditor_uploader.urls')),
+
 ]

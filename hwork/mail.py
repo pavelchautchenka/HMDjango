@@ -1,3 +1,4 @@
+
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_bytes
@@ -5,6 +6,15 @@ from django.utils.http import urlsafe_base64_encode
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.core.mail import EmailMultiAlternatives
+
+
+from hwork.forms import PasswordResetRequestForm
+
+import ssl
+from django.core.mail.backends.smtp import EmailBackend
+import ssl
+from django.core.mail.backends.smtp import EmailBackend
+
 
 
 class BaseEmailSender:
@@ -56,6 +66,9 @@ class BaseEmailSender:
         )
 
 
+
+
+
 class ConfirmUserRegisterEmailSender(BaseEmailSender):
     template_name = "registration/email_confirm.html"
     user_id_field = "username"
@@ -63,6 +76,6 @@ class ConfirmUserRegisterEmailSender(BaseEmailSender):
 
 
 class ConfirmUserResetPasswordEmailSender(BaseEmailSender):
-    template_name = "registration/reset_password_confirm.html"
-    user_id_field = "id"
+    template_name = "password/password_reset_request.html"
+    user_id_field = "username"
     subject = "Сброс пароля"
