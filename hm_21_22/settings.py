@@ -113,10 +113,10 @@ WSGI_APPLICATION = 'hm_21_22.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': "posts",
-        "USER": "django_pavel",
-        "PASSWORD": "password",
-        "HOST": "127.0.0.1",  # IP адрес или домен СУБД.
+        'NAME': os.environ.get("DATABASE_NAME"),
+        "USER": os.environ.get("DATABASE_USER"),
+        "PASSWORD": os.environ.get("DATABASE_PASSWORD"),
+        "HOST": os.environ.get("DATABASE_HOST"),  # IP адрес или домен СУБД.
         "PORT": 5432,
     }
 }
