@@ -209,7 +209,7 @@ EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', "")
 # Префикс, по которому Django понимает,
 # что данный URL необходимо рассматривать как файл в папке со статикой.
 STATIC_URL = 'static/'
-STATIC_ROOT = os.path.join("/var/www/django/", 'static')
+
 if os.environ.get("COLLECT_STATIC"):
     STATIC_ROOT = os.path.join("/var/www/django/", 'static')
     #STATIC_ROOT = "/var/www/django/static/"
