@@ -211,7 +211,8 @@ EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', "")
 STATIC_URL = 'static/'
 
 if os.environ.get("COLLECT_STATIC"):
-    STATIC_ROOT = "/var/www/django/static/"
+    STATIC_ROOT = os.path.join("/var/www/django/", 'static')
+    #STATIC_ROOT = "/var/www/django/static/"
 
 else:
     STATICFILES_DIRS = [
