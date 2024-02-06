@@ -6,12 +6,21 @@ from django.http import HttpResponseRedirect, Http404, HttpRequest
 from django.core.handlers.wsgi import WSGIRequest
 from django.db.models import Q
 from django.contrib.auth import authenticate, login
+from rest_framework.decorators import permission_classes
+from rest_framework.permissions import AllowAny
+
 from .models import Note, User, Tag
 import os
 from django.db.models import F
 from django.contrib.postgres.aggregates import ArrayAgg
 from django.contrib.auth.decorators import login_required
 
+
+@permission_classes([AllowAny])
+def history(request: WSGIRequest):
+    viewed_notes = request.session.get('viewed_notes', [])
+    notes = Note.objects.filter(uuid__in=viewed_notes)
+    return render(request, 'notes/viewed_notes.html', {'notes': notes})
 
 def ret_queryset():
     return (Note.objects.all()  # Получение всех объектов из таблицы Note

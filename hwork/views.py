@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.http import HttpResponseRedirect, Http404
@@ -9,7 +10,7 @@ from django.utils.http import urlsafe_base64_decode
 from .mail import ConfirmUserRegisterEmailSender
 from .models import Note, User, Tag
 from .services import ret_queryset, create_note, update_user
-from rest_framework.decorators import  permission_classes
+from rest_framework.decorators import permission_classes, api_view
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, AllowAny
 from django.contrib.auth.tokens import default_token_generator
 from django.shortcuts import render, redirect
@@ -17,7 +18,7 @@ from .mail import ConfirmUserResetPasswordEmailSender
 from django.contrib import messages
 
 
-@permission_classes([AllowAny])
+
 def home_page_view(request: WSGIRequest):
     queryset = ret_queryset()
     queryset = queryset.filter(active=True)
@@ -54,6 +55,7 @@ def update_note(request: WSGIRequest, note_uuid):
     return render(request, "notes/update_form.html", {"note": note})
 
 
+@login_required(login_url='/accounts/login/')
 def create_note_view(request: WSGIRequest):
     if request.method == "POST":
         note = create_note(request)
@@ -75,10 +77,7 @@ def show_note_view(request: WSGIRequest, note_uuid):
     return render(request, "notes/note.html", {"note": note})
 
 
-def history(request: WSGIRequest):
-    viewed_notes = request.session.get('viewed_notes', [])
-    notes = Note.objects.filter(uuid__in=viewed_notes)
-    return render(request, 'notes/viewed_notes.html', {'notes': notes})
+
 
 
 @permission_classes([IsAuthenticated])
@@ -161,7 +160,7 @@ def reset_password_view(request: WSGIRequest):
         except User.DoesNotExist:
             error_message = 'Username or email does not exist.'
 
-            return render(request, 'password/errors.html', {'error_message': error_message})
+            return render(request, 'errors.html', {'error_message': error_message})
 
     return render(request, 'password/reset_form.html')
 
@@ -172,7 +171,7 @@ def confirm_new_password_view(request: WSGIRequest, uidb64, token):
 
     if not default_token_generator.check_token(user, token):
         error_message = 'Invalid token.'
-        return render(request, "password/errors.html", {'error_message': error_message})
+        return render(request, "errors.html", {'error_message': error_message})
 
     if request.method == 'POST':
         new_password1 = request.POST.get("password1")
@@ -186,7 +185,7 @@ def confirm_new_password_view(request: WSGIRequest, uidb64, token):
         else:
             # Обработка ошибки, если пароли не совпадают или не предоставлены
             error_message = ("passwords don't match")
-            return render(request, "password/errors.html", {'error_message': error_message})
+            return render(request, "errors.html", {'error_message': error_message})
     return render(request, "password/confirme_new_password.html", {'uidb64': uidb64, 'token': token})
 
 

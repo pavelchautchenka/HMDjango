@@ -19,7 +19,7 @@ from django.urls import path, include, re_path
 from django.conf.urls.static import serve
 from django.conf import settings
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
-from django.contrib.auth import views as auth_views
+
 
 from hwork import views
 from hwork import services
@@ -34,7 +34,7 @@ urlpatterns = [
     #Reset_New_Password
     path("register/pasword-resetform", views.reset_form_view, name='resetform'),
     path("password-reset/", views.reset_password_view, name="reset-password"),
-    path("password-reset/new-password<uidb64>/<token>", views.confirm_new_password_view, name="new-password"),
+    path("new-password<uidb64>/<token>", views.confirm_new_password_view, name="new-password"),
     # Home
     path("", views.home_page_view, name="home"),  # Добавим главную страницу.
     path("filter", views.filter_notes_view, name="filter-notes"),
@@ -49,7 +49,8 @@ urlpatterns = [
     #About Site
     path("about", views.about_page_view, name="about"),
     #Messages history
-    path('history/', views.history, name="history"),
+    path('history/', services.history, name="history"),
+
     re_path(r"^media/(?P<path>.*)$", serve, {"document_root": settings.MEDIA_ROOT}),
     path("__debug__/", include("debug_toolbar.urls")),
     path('ckeditor/', include('ckeditor_uploader.urls')),
@@ -59,7 +60,7 @@ urlpatterns = [
     # path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
     # path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     # path('reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
-
+    # API
     path('api/', include('hwork.api.urls')),
     path('api/token/', TokenObtainPairView.as_view(), name='token-obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),

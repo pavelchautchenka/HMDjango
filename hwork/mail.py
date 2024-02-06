@@ -79,3 +79,26 @@ class ConfirmUserResetPasswordEmailSender(BaseEmailSender):
     template_name = "password/password_reset_request.html"
     user_id_field = "username"
     subject = "Сброс пароля"
+# ===================================================
+
+# class BaseEmailSender:
+#     def __init__(self, request, user: AbstractUser):
+#         self.request = request
+#         self.user = user
+#
+#     def send_mail(self,template_name, subject, user_id_field="username"):
+#         context = {"user": self.user,
+#                    "domain": str(get_current_site(self.request)),
+#                    "uid64": urlsafe_base64_encode(force_bytes(str(getattr(self.user,user_id_field )))),
+#                    "token": default_token_generator.make_token(self.user),}
+#         mail_body = render_to_string(template_name, context)
+#         mail_subject = f"{subject} на сайте {context['domain']}"
+#
+#         mail = EmailMultiAlternatives(subject=mail_subject, to=[self.user.email])
+#         mail.attach_alternative(mail_body, "text/html")
+#         mail.send()
+#
+# # Использование класса
+# email_sender = BaseEmailSender(request, user)
+# email_sender.send_mail("registration/email_confirm.html", "Подтвердите регистрацию")
+# email_sender.send_mail("password/password_reset_request.html", "Сброс пароля")
